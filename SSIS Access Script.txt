@@ -1,0 +1,36 @@
+
+use SSISDB
+go
+
+create table ##GTaccess (id int identity(1,1),name varchar(100))
+go
+insert into ##GTaccess (name) 
+select  name from [internal].[folders]
+declare @login varchar(50)='NYMINT\NJESDB_ALLDB_RWX'
+declare @Folname varchar(100)
+declare @new_foldername varchar(1000)
+declare @MAXID int
+declare @MINID int
+set @MAXID=(select max(id) from ##GTaccess)
+set @MINID=(select min(id) from ##GTaccess)
+WHILE (@MINID<= @MAXID)
+begin
+--set @MINID=(select min(id) from ##GTaccess)
+set @Folname=(select name from ##GTaccess where id=@MINID)
+--set @new_foldername= '@Folname' -- replace with new folder name
+
+declare @objectid int
+declare @principalid int
+
+select @objectid = folder_id from internal.folders where name = @Folname
+select @principalid = principal_id from sys.database_principals where name = @login -- DW Team DEV group 
+
+EXEC [SSISDB].[catalog].[grant_permission] @object_type=1, @object_id=@objectid, @principal_id=@principalid, @permission_type=1
+
+EXEC [SSISDB].[catalog].[grant_permission] @object_type=1, @object_id=@objectid, @principal_id=@principalid, @permission_type=101
+--print @Folname
+set @MINID=@MINID+1
+END
+drop table ##GTaccess 
+
+

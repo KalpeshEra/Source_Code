@@ -1,0 +1,19 @@
+use LZ
+go
+declare @sql nvarchar(max)
+set @sql = ''
+
+SELECT @sql = @sql+
+'
+print ''Dropping '+name+'''
+execute lz.dbo.sp_revokedbaccess '''+name+'''
+'
+FROM
+dbo.sysusers
+WHERE
+name NOT IN('dbo','guest','INFORMATION_SCHEMA','sys','public')
+AND LEFT(name,3) <> 'db_'
+order by
+name
+
+execute ( @sql )

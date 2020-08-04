@@ -1,0 +1,1 @@
+select servicename ,service_account ,startup_type_desc ,status from sys.dm_server_services 

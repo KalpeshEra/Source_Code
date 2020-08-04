@@ -1,0 +1,9 @@
+alter database Tfs_DefaultCollection SET single_user with rollback immediate
+-- [Tfs_DefaultCollection]
+EXEC sp_detach_db @dbname = 'Tfs_DefaultCollection' , @skipchecks = 'true';
+
+EXEC sp_attach_db @dbname = 'Tfs_DefaultCollection',
+@filename1 = 'E:\Data\Tfs_DefaultCollection.mdf',
+@filename2 = 'L:\sqllogs\Tfs_DefaultCollection_log.ldf'
+
+alter database Tfs_DefaultCollection SET multi_user

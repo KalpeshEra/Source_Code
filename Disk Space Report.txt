@@ -1,0 +1,41 @@
+--Disk Space Report : 
+
+
+SET NOCOUNT ON
+DECLARE @hr int
+DECLARE @fso int
+DECLARE @drive1 char(1)
+DECLARE @odrive int
+DECLARE @TotalSize varchar(20) 
+DECLARE @MB Numeric ; SET @MB = 1048576
+
+CREATE TABLE #drives (drive char(1) PRIMARY KEY, FreeSpace int NULL,TotalSize int NULL) INSERT #drives(drive,FreeSpace) 
+EXEC master.dbo.xp_fixeddrives EXEC @hr=sp_OACreate 'Scripting.FileSystemObject',@fso OUT 
+
+IF @hr <> 0 
+EXEC sp_OAGetErrorInfo @fso
+
+DECLARE dcur CURSOR LOCAL FAST_FORWARD
+FOR 
+SELECT drive from #drives ORDER by drive
+OPEN dcur FETCH NEXT FROM dcur INTO @drive1
+WHILE @@FETCH_STATUS=0
+BEGIN
+EXEC @hr = sp_OAMethod @fso,'GetDrive', @odrive OUT, @drive1
+IF @hr <> 0 EXEC sp_OAGetErrorInfo @fso EXEC @hr =
+sp_OAGetProperty
+@odrive,'TotalSize', @TotalSize OUT IF @hr <> 0 EXEC sp_OAGetErrorInfo
+@odrive UPDATE #drives SET TotalSize=@TotalSize/@MB WHERE
+drive=@drive1 FETCH NEXT FROM dcur INTO @drive1
+End
+Close dcur
+DEALLOCATE dcur
+EXEC @hr=sp_OADestroy @fso IF @hr <> 0 EXEC sp_OAGetErrorInfo @fso
+SELECT
+drive AS 'DRIVE', 
+CAST(convert(decimal(10,2),convert(float,TotalSize)/1024) AS VARCHAR(10)) AS 'TOTAL_GB',  
+CAST(convert(decimal(10,2),convert(float,FreeSpace)/1024) AS VARCHAR(10)) AS 'FREE_GB',
+CAST((convert(decimal(10,2),convert(float,TotalSize)/1024)) -  (convert(decimal(10,2),convert(float,FreeSpace)/1024)) AS VARCHAR(10)) as 'Used_GB',
+convert(decimal(10,2),((FREESPACE/1024)/((TOTALSIZE/1024)*1.0))*100.0) as [Free_%]
+from #drives ORDER BY ((FREESPACE/1024)/((TOTALSIZE/1024)*1.0))*100.0 
+drop table #drives
