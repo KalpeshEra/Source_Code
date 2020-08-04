@@ -1,0 +1,5 @@
+SELECT j.name AS Job_Name,DATEDIFF(ss,a.start_execution_date ,GETDATE ())   
+FROM msdb.dbo.sysjobactivity a INNER JOIN msdb.dbo.sysjobs j 
+ON a.job_id =j.job_id
+WHERE CONVERT(DATE,a.start_execution_date )=CONVERT(DATE,GETDATE ())
+AND a.stop_execution_date IS NULL
