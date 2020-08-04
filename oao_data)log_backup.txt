@@ -1,0 +1,12 @@
+Use DBA
+go
+EXECUTE dbo.DatabaseBackup
+@Databases = 'OAODATA',
+@BackupType = 'LOG',
+@CheckSum = 'Y',
+@BackupSoftware = 'DATA_DOMAIN_BOOST',
+@DataDomainBoostHost = 'DALDataDomain',
+@DataDomainBoostUser = 'ddboost',
+@DataDomainBoostDevicePath = '/DBbackups',
+@DataDomainBoostLockboxPath = 'C:\Program Files\DPSAPPS\common\lockbox',
+@CleanupTime = 168

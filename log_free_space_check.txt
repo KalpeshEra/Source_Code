@@ -1,0 +1,4 @@
+dbcc sqlperf(logspace)
+
+
+select log_reuse_wait_desc ,* from sys.databases where name='OAODATA'

@@ -1,0 +1,12 @@
+--Query to list out the Log Shipping Jobs
+SELECT * 
+FROM msdb.dbo.sysjobs 
+WHERE category_id = 6
+--Query to check the job history error messages if any
+SELECT * 
+FROM [msdb].[dbo].[sysjobhistory]
+WHERE [message] like '%Operating system error%'
+--Query to check the Log Shipping errors
+SELECT * 
+FROM [msdb].[dbo].[log_shipping_monitor_error_detail]
+WHERE [message] like '%Operating system error%'

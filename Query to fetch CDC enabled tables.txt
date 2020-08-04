@@ -1,0 +1,32 @@
+Query to fetch CDC enabled tables
+
+SELECT s.name AS Schema_Name, tb.name AS Table_Name
+, tb.object_id, tb.type, tb.type_desc, tb.is_tracked_by_cdc
+FROM sys.tables tb
+INNER JOIN sys.schemas s on s.schema_id = tb.schema_id
+WHERE tb.is_tracked_by_cdc = 1
+
+
+Query to check CDC enabled databases
+
+use master
+select name, is_cdc_enabled 
+from sys.databases
+where is_cdc_enabled =1
+
+1.	Enable CDC at database level using below command.
+
+use database_name
+go
+exec sys.sp_cdc_enable_db
+go
+
+2.	Enable CDC on tables using below command.
+
+use database_name
+go
+exec sys.sp_cdc_enable_table
+@source_schema = N'schema_name',
+@source_name = N'table_name’,
+@role_name = null
+go
