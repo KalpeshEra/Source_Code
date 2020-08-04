@@ -1,0 +1,10 @@
+Hi team,
+If you find DBA – CleanUpExpiredBackupSets (CLI script) is failed, please modify the job with below T-sql script (another suggestion by EMC) – which is working fine to clean all the expired backup set of the server. Please change the Device_host and client as per requirement from the script. 
+
+USE [master]
+GO
+DECLARE @returnCode int
+EXEC @returnCode = dbo.emc_run_delete ' -n mssql -a "DDBOOST_USER=ddboost" -a "DEVICE_PATH=DBbackups" -a "DEVICE_HOST=DALDataDomain" -a "CLIENT=Servername" -k' IF @returnCode <> 0 
+BEGIN
+RAISERROR ('Fail!', 16, 1)
+END
