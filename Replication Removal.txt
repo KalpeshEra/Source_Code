@@ -1,0 +1,7 @@
+DECLARE @subscriptionDB AS sysname
+SET @subscriptionDB = N'pre-auththin'
+
+-- Remove replication objects from a subscription database (if necessary).
+USE master
+EXEC sp_removedbreplication @subscriptionDB
+GO

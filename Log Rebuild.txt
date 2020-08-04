@@ -1,0 +1,18 @@
+Use master
+GO
+ALTER DATABASE [UPADS] SET EMERGENCY
+GO
+
+ALTER DATABASE [UPADS] SET SINGLE_USER
+GO
+
+ALTER DATABASE [UPADS] REBUILD LOG ON
+(NAME= logicalname, FILENAME='F:\UPADSDB_L_DRIVE\MSSQL\TLog\UPADS_Log1.ldf')
+GO
+
+
+--------------------------------
+
+Go to Disk management on REPDB2(EHATLPD1CRDB01.caracorenational.com), check for Disk 23, it must be offline, Right Click on the Disk and Chose option “Import as Foreign Disk”.
+Note: Dynamic disks disconnects from OS (Background compatibility). Basic disks stays there.
+
