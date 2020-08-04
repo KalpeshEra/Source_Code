@@ -1,0 +1,4 @@
+For checking current CPU usages:
+declare @cpuusage money = (select cntr_value from sys.dm_os_performance_counters where object_name = N'SQLServer:Workload Group Stats' and counter_name = N'CPU usage %' and instance_name = 'default')
+declare @cpuusagebase money = (select cntr_value from sys.dm_os_performance_counters where object_name = N'SQLServer:Workload Group Stats' and counter_name = N'CPU usage % base' and instance_name = 'default')
+select (@cpuusage / @cpuusagebase) * 100
